@@ -90,6 +90,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8) {
             target_os = "redox",
             target_os = "l4re",
             target_os = "horizon",
+            target_os = "francium",
         )))]
         'poll: {
             use crate::sys::os::errno;
@@ -134,6 +135,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8) {
             target_os = "vxworks",
             target_os = "l4re",
             target_os = "horizon",
+            target_os = "francium",
         )))]
         {
             use crate::sys::os::errno;
@@ -152,7 +154,7 @@ pub unsafe fn init(argc: isize, argv: *const *const u8) {
     }
 
     unsafe fn reset_sigpipe() {
-        #[cfg(not(any(target_os = "emscripten", target_os = "fuchsia", target_os = "horizon")))]
+        #[cfg(not(any(target_os = "emscripten", target_os = "fuchsia", target_os = "horizon", target_os = "francium")))]
         rtassert!(signal(libc::SIGPIPE, libc::SIG_IGN) != libc::SIG_ERR);
     }
 }
@@ -347,7 +349,7 @@ cfg_if::cfg_if! {
     }
 }
 
-#[cfg(any(target_os = "espidf", target_os = "horizon"))]
+#[cfg(any(target_os = "espidf", target_os = "horizon", target_os = "francium"))]
 mod unsupported {
     use crate::io;
 

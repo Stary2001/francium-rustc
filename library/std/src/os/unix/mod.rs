@@ -47,6 +47,8 @@ mod platform {
     pub use crate::os::espidf::*;
     #[cfg(target_os = "freebsd")]
     pub use crate::os::freebsd::*;
+    #[cfg(target_os = "francium")]
+    pub use crate::os::francium::*;
     #[cfg(target_os = "fuchsia")]
     pub use crate::os::fuchsia::*;
     #[cfg(target_os = "haiku")]

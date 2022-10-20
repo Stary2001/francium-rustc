@@ -117,6 +117,8 @@ pub mod emscripten;
 pub mod espidf;
 #[cfg(all(target_vendor = "fortanix", target_env = "sgx"))]
 pub mod fortanix_sgx;
+#[cfg(target_os = "francium")]
+pub mod francium;
 #[cfg(target_os = "freebsd")]
 pub mod freebsd;
 #[cfg(target_os = "fuchsia")]

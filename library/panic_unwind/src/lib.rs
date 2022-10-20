@@ -49,7 +49,7 @@ cfg_if::cfg_if! {
         all(target_family = "windows", target_env = "gnu"),
         target_os = "psp",
         target_os = "solid_asp3",
-        all(target_family = "unix", not(target_os = "espidf")),
+        all(target_family = "unix", not(any(target_os = "espidf", target_os = "francium"))),
         all(target_vendor = "fortanix", target_env = "sgx"),
     ))] {
         // Rust runtime's startup objects depend on these symbols, so make them public.

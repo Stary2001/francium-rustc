@@ -63,6 +63,7 @@ mod apple_sdk_base;
 mod avr_gnu_base;
 mod bpf_base;
 mod dragonfly_base;
+mod francium_base;
 mod freebsd_base;
 mod fuchsia_base;
 mod haiku_base;
@@ -1046,6 +1047,9 @@ supported_targets! {
     ("x86_64-unknown-none", x86_64_unknown_none),
 
     ("mips64-openwrt-linux-musl", mips64_openwrt_linux_musl),
+    
+    ("x86_64-unknown-francium", x86_64_unknown_francium),
+    ("aarch64-unknown-francium", aarch64_unknown_francium),
 }
 
 /// Cow-Vec-Str: Cow<'static, [Cow<'static, str>]>

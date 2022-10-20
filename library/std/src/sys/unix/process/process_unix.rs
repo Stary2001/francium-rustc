@@ -294,7 +294,7 @@ impl Command {
         {
             if let Some(_g) = self.get_groups() {
                 //FIXME: Redox kernel does not support setgroups yet
-                #[cfg(not(target_os = "redox"))]
+                #[cfg(not(any(target_os = "redox", target_os = "francium")))]
                 cvt(libc::setgroups(_g.len().try_into().unwrap(), _g.as_ptr()))?;
             }
             if let Some(u) = self.get_gid() {
@@ -308,7 +308,7 @@ impl Command {
                 // uid has dropped, we may still have groups that enable us to
                 // do super-user things.
                 //FIXME: Redox kernel does not support setgroups yet
-                #[cfg(not(target_os = "redox"))]
+                #[cfg(not(any(target_os = "redox", target_os = "francium")))]
                 if libc::getuid() == 0 && self.get_groups().is_none() {
                     cvt(libc::setgroups(0, ptr::null()))?;
                 }

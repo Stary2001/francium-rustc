@@ -50,7 +50,7 @@ impl Condvar {
     // hence that initialization should be skipped as well
     //
     // Similar story for the 3DS (horizon).
-    #[cfg(any(target_os = "espidf", target_os = "horizon"))]
+    #[cfg(any(target_os = "espidf", target_os = "horizon", target_os = "francium"))]
     unsafe fn init(&mut self) {
         let r = libc::pthread_cond_init(self.inner.get(), crate::ptr::null());
         assert_eq!(r, 0);
@@ -64,7 +64,8 @@ impl Condvar {
         target_os = "android",
         target_os = "redox",
         target_os = "espidf",
-        target_os = "horizon"
+        target_os = "horizon",
+        target_os = "francium"
     )))]
     unsafe fn init(&mut self) {
         use crate::mem::MaybeUninit;

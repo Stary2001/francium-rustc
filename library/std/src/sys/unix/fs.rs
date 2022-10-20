@@ -41,6 +41,7 @@ use libc::fstatat64;
     target_os = "solaris",
     target_os = "fuchsia",
     target_os = "redox",
+    target_os = "francium",
     target_os = "illumos"
 ))]
 use libc::readdir as readdir64;
@@ -56,7 +57,8 @@ use libc::readdir64_r;
     target_os = "illumos",
     target_os = "l4re",
     target_os = "fuchsia",
-    target_os = "redox"
+    target_os = "redox",
+    target_os = "francium"
 )))]
 use libc::readdir_r as readdir64_r;
 #[cfg(target_os = "android")]
@@ -237,6 +239,7 @@ pub struct ReadDir {
         target_os = "illumos",
         target_os = "fuchsia",
         target_os = "redox",
+        target_os = "francium"
     )))]
     end_of_stream: bool,
 }
@@ -252,7 +255,8 @@ unsafe impl Sync for Dir {}
     target_os = "solaris",
     target_os = "illumos",
     target_os = "fuchsia",
-    target_os = "redox"
+    target_os = "redox",
+    target_os = "francium"
 ))]
 pub struct DirEntry {
     dir: Arc<InnerReadDir>,
@@ -272,7 +276,8 @@ pub struct DirEntry {
     target_os = "solaris",
     target_os = "illumos",
     target_os = "fuchsia",
-    target_os = "redox"
+    target_os = "redox",
+    target_os = "francium"
 ))]
 struct dirent64_min {
     d_ino: u64,
@@ -286,7 +291,8 @@ struct dirent64_min {
     target_os = "solaris",
     target_os = "illumos",
     target_os = "fuchsia",
-    target_os = "redox"
+    target_os = "redox",
+    target_os = "francium"
 )))]
 pub struct DirEntry {
     dir: Arc<InnerReadDir>,
@@ -546,9 +552,9 @@ impl Default for FileTimes {
         // an error in `set_times`.
         // ESP-IDF does not support `futimens` at all and the behavior for that OS is therefore
         // the same as for Redox.
-        #[cfg(any(target_os = "redox", target_os = "espidf"))]
+        #[cfg(any(target_os = "redox", target_os = "espidf", target_os = "francium"))]
         let omit = libc::timespec { tv_sec: 0, tv_nsec: 0 };
-        #[cfg(not(any(target_os = "redox", target_os = "espidf")))]
+        #[cfg(not(any(target_os = "redox", target_os = "espidf", target_os = "francium")))]
         let omit = libc::timespec { tv_sec: 0, tv_nsec: libc::UTIME_OMIT as _ };
         Self([omit; 2])
     }
@@ -593,6 +599,7 @@ impl Iterator for ReadDir {
         target_os = "solaris",
         target_os = "fuchsia",
         target_os = "redox",
+        target_os = "francium",
         target_os = "illumos"
     ))]
     fn next(&mut self) -> Option<io::Result<DirEntry>> {
@@ -651,6 +658,7 @@ impl Iterator for ReadDir {
         target_os = "solaris",
         target_os = "fuchsia",
         target_os = "redox",
+        target_os = "francium",
         target_os = "illumos"
     )))]
     fn next(&mut self) -> Option<io::Result<DirEntry>> {
@@ -768,6 +776,7 @@ impl DirEntry {
         target_os = "l4re",
         target_os = "fuchsia",
         target_os = "redox",
+        target_os = "francium",
         target_os = "vxworks",
         target_os = "espidf",
         target_os = "horizon"
@@ -823,7 +832,8 @@ impl DirEntry {
         target_os = "solaris",
         target_os = "illumos",
         target_os = "fuchsia",
-        target_os = "redox"
+        target_os = "redox",
+        target_os = "francium"
     )))]
     fn name_cstr(&self) -> &CStr {
         unsafe { CStr::from_ptr(self.entry.d_name.as_ptr()) }
@@ -834,7 +844,8 @@ impl DirEntry {
         target_os = "solaris",
         target_os = "illumos",
         target_os = "fuchsia",
-        target_os = "redox"
+        target_os = "redox",
+        target_os = "francium"
     ))]
     fn name_cstr(&self) -> &CStr {
         &self.name
@@ -1079,7 +1090,7 @@ impl File {
 
     pub fn set_times(&self, times: FileTimes) -> io::Result<()> {
         cfg_if::cfg_if! {
-            if #[cfg(any(target_os = "redox", target_os = "espidf"))] {
+            if #[cfg(any(target_os = "redox", target_os = "espidf", target_os = "francium"))] {
                 // Redox doesn't appear to support `UTIME_OMIT`.
                 // ESP-IDF does not support `futimens` at all and the behavior for that OS is therefore
                 // the same as for Redox.
@@ -1305,6 +1316,7 @@ pub fn readdir(p: &Path) -> io::Result<ReadDir> {
                     target_os = "illumos",
                     target_os = "fuchsia",
                     target_os = "redox",
+                    target_os = "francium"
                 )))]
                 end_of_stream: false,
             })
@@ -1375,7 +1387,7 @@ pub fn link(original: &Path, link: &Path) -> io::Result<()> {
     let original = cstr(original)?;
     let link = cstr(link)?;
     cfg_if::cfg_if! {
-        if #[cfg(any(target_os = "vxworks", target_os = "redox", target_os = "android", target_os = "espidf", target_os = "horizon"))] {
+        if #[cfg(any(target_os = "vxworks", target_os = "redox", target_os = "francium", target_os = "android", target_os = "espidf", target_os = "horizon"))] {
             // VxWorks, Redox and ESP-IDF lack `linkat`, so use `link` instead. POSIX leaves
             // it implementation-defined whether `link` follows symlinks, so rely on the
             // `symlink_hard_link` test in library/std/src/fs/tests.rs to check the behavior.
@@ -1675,13 +1687,13 @@ pub fn chroot(dir: &Path) -> io::Result<()> {
 pub use remove_dir_impl::remove_dir_all;
 
 // Fallback for REDOX, ESP-ID, Horizon, and Miri
-#[cfg(any(target_os = "redox", target_os = "espidf", target_os = "horizon", miri))]
+#[cfg(any(target_os = "redox", target_os = "francium", target_os = "espidf", target_os = "horizon", miri))]
 mod remove_dir_impl {
     pub use crate::sys_common::fs::remove_dir_all;
 }
 
 // Modern implementation using openat(), unlinkat() and fdopendir()
-#[cfg(not(any(target_os = "redox", target_os = "espidf", target_os = "horizon", miri)))]
+#[cfg(not(any(target_os = "redox", target_os = "francium", target_os = "espidf", target_os = "horizon", miri)))]
 mod remove_dir_impl {
     use super::{cstr, lstat, Dir, DirEntry, InnerReadDir, ReadDir};
     use crate::ffi::CStr;
@@ -1770,6 +1782,7 @@ mod remove_dir_impl {
                     target_os = "illumos",
                     target_os = "fuchsia",
                     target_os = "redox",
+                    target_os = "francium"
                 )))]
                 end_of_stream: false,
             },

@@ -87,7 +87,7 @@ impl FileDesc {
         Ok(ret as usize)
     }
 
-    #[cfg(not(any(target_os = "espidf", target_os = "horizon")))]
+    #[cfg(not(any(target_os = "espidf", target_os = "horizon", target_os = "francium")))]
     pub fn read_vectored(&self, bufs: &mut [IoSliceMut<'_>]) -> io::Result<usize> {
         let ret = cvt(unsafe {
             libc::readv(
@@ -99,14 +99,14 @@ impl FileDesc {
         Ok(ret as usize)
     }
 
-    #[cfg(any(target_os = "espidf", target_os = "horizon"))]
+    #[cfg(any(target_os = "espidf", target_os = "horizon", target_os = "francium"))]
     pub fn read_vectored(&self, bufs: &mut [IoSliceMut<'_>]) -> io::Result<usize> {
         return crate::io::default_read_vectored(|b| self.read(b), bufs);
     }
 
     #[inline]
     pub fn is_read_vectored(&self) -> bool {
-        cfg!(not(any(target_os = "espidf", target_os = "horizon")))
+        cfg!(not(any(target_os = "espidf", target_os = "horizon", target_os = "francium")))
     }
 
     pub fn read_to_end(&self, buf: &mut Vec<u8>) -> io::Result<usize> {
@@ -213,6 +213,7 @@ impl FileDesc {
         target_os = "linux",
         target_os = "haiku",
         target_os = "redox",
+        target_os = "francium",
         target_os = "vxworks"
     )))]
     pub fn set_cloexec(&self) -> io::Result<()> {
@@ -231,6 +232,7 @@ impl FileDesc {
         target_os = "linux",
         target_os = "haiku",
         target_os = "redox",
+        target_os = "francium",
         target_os = "vxworks"
     ))]
     pub fn set_cloexec(&self) -> io::Result<()> {

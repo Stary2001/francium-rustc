@@ -55,6 +55,7 @@ extern "C" {
             target_os = "openbsd",
             target_os = "android",
             target_os = "redox",
+            target_os = "francium",
             target_env = "newlib"
         ),
         link_name = "__errno"
@@ -451,6 +452,11 @@ pub fn current_exe() -> io::Result<PathBuf> {
     super::unsupported::unsupported()
 }
 
+#[cfg(target_os = "francium")]
+pub fn current_exe() -> io::Result<PathBuf> {
+    super::unsupported::unsupported()
+}
+
 #[cfg(target_os = "fuchsia")]
 pub fn current_exe() -> io::Result<PathBuf> {
     use crate::io::ErrorKind;
@@ -603,7 +609,8 @@ pub fn home_dir() -> Option<PathBuf> {
         target_os = "redox",
         target_os = "vxworks",
         target_os = "espidf",
-        target_os = "horizon"
+        target_os = "horizon",
+        target_os = "francium"
     ))]
     unsafe fn fallback() -> Option<OsString> {
         None
@@ -616,7 +623,8 @@ pub fn home_dir() -> Option<PathBuf> {
         target_os = "redox",
         target_os = "vxworks",
         target_os = "espidf",
-        target_os = "horizon"
+        target_os = "horizon",
+        target_os = "francium"
     )))]
     unsafe fn fallback() -> Option<OsString> {
         let amt = match libc::sysconf(libc::_SC_GETPW_R_SIZE_MAX) {
