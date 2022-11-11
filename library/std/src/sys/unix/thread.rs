@@ -160,6 +160,13 @@ impl Thread {
         }
     }
 
+    #[cfg(target_os = "francium")]
+    pub fn set_name(name: &CStr) {
+        unsafe {
+            libc::pthread_setname_np(libc::pthread_self(), name.as_ptr());
+        }
+    }
+
     #[cfg(target_os = "netbsd")]
     pub fn set_name(name: &CStr) {
         unsafe {

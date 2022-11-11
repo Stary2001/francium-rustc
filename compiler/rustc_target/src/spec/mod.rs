@@ -66,6 +66,7 @@ mod bpf_base;
 mod dragonfly_base;
 mod freebsd_base;
 mod fuchsia_base;
+mod francium_base;
 mod haiku_base;
 mod hermit_base;
 mod illumos_base;
@@ -1082,6 +1083,9 @@ supported_targets! {
     ("powerpc64le-unknown-freebsd", powerpc64le_unknown_freebsd),
     ("riscv64gc-unknown-freebsd", riscv64gc_unknown_freebsd),
     ("x86_64-unknown-freebsd", x86_64_unknown_freebsd),
+
+    ("x86_64-unknown-francium", x86_64_unknown_francium),
+    ("aarch64-unknown-francium", aarch64_unknown_francium),	
 
     ("x86_64-unknown-dragonfly", x86_64_unknown_dragonfly),
 

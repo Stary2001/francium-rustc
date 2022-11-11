@@ -41,7 +41,7 @@ cfg_if::cfg_if! {
 }
 
 extern "C" {
-    #[cfg(not(any(target_os = "dragonfly", target_os = "vxworks")))]
+    #[cfg(not(any(target_os = "dragonfly", target_os = "vxworks", target_os = "francium")))]
     #[cfg_attr(
         any(
             target_os = "linux",
@@ -71,13 +71,13 @@ extern "C" {
 }
 
 /// Returns the platform-specific value of errno
-#[cfg(not(any(target_os = "dragonfly", target_os = "vxworks")))]
+#[cfg(not(any(target_os = "dragonfly", target_os = "vxworks", target_os = "francium")))]
 pub fn errno() -> i32 {
     unsafe { (*errno_location()) as i32 }
 }
 
 /// Sets the platform-specific value of errno
-#[cfg(all(not(target_os = "dragonfly"), not(target_os = "vxworks")))] // needed for readdir and syscall!
+#[cfg(all(not(target_os = "dragonfly"), not(target_os = "vxworks"), not(target_os = "francium")))] // needed for readdir and syscall!
 #[allow(dead_code)] // but not all target cfgs actually end up using it
 pub fn set_errno(e: i32) {
     unsafe { *errno_location() = e as c_int }
@@ -108,6 +108,29 @@ pub fn set_errno(e: i32) {
 
     unsafe {
         errno = e;
+    }
+}
+
+#[cfg(target_os = "francium")]
+pub fn errno() -> i32 {
+    extern "C" {
+        #[thread_local]
+        static __mlibc_errno: c_int;
+    }
+
+    unsafe { __mlibc_errno as i32 }
+}
+
+#[cfg(target_os = "francium")]
+#[allow(dead_code)]
+pub fn set_errno(e: i32) {
+    extern "C" {
+        #[thread_local]
+        static mut __mlibc_errno: c_int;
+    }
+
+    unsafe {
+        __mlibc_errno = e;
     }
 }
 
@@ -239,6 +262,11 @@ impl StdError for JoinPathsError {
     fn description(&self) -> &str {
         "failed to join paths"
     }
+}
+
+#[cfg(target_os = "francium")]
+pub fn current_exe() -> io::Result<PathBuf> {
+    unimplemented!()
 }
 
 #[cfg(any(target_os = "freebsd", target_os = "dragonfly"))]

@@ -794,6 +794,7 @@ impl DirEntry {
         target_os = "illumos",
         target_os = "haiku",
         target_os = "l4re",
+        target_os = "francium",
         target_os = "fuchsia",
         target_os = "redox",
         target_os = "vxworks",
@@ -1105,7 +1106,7 @@ impl File {
     }
 
     pub fn set_times(&self, times: FileTimes) -> io::Result<()> {
-        #[cfg(not(any(target_os = "redox", target_os = "espidf", target_os = "horizon")))]
+        #[cfg(not(any(target_os = "redox", target_os = "espidf", target_os = "horizon", target_os = "francium")))]
         let to_timespec = |time: Option<SystemTime>| {
             match time {
                 Some(time) if let Some(ts) = time.t.to_timespec() => Ok(ts),
@@ -1114,10 +1115,10 @@ impl File {
                 None => Ok(libc::timespec { tv_sec: 0, tv_nsec: libc::UTIME_OMIT as _ }),
             }
         };
-        #[cfg(not(any(target_os = "redox", target_os = "espidf", target_os = "horizon")))]
+        #[cfg(not(any(target_os = "redox", target_os = "espidf", target_os = "horizon", target_os = "francium")))]
         let times = [to_timespec(times.accessed)?, to_timespec(times.modified)?];
         cfg_if::cfg_if! {
-            if #[cfg(any(target_os = "redox", target_os = "espidf", target_os = "horizon"))] {
+            if #[cfg(any(target_os = "redox", target_os = "espidf", target_os = "horizon", target_os = "francium"))] {
                 // Redox doesn't appear to support `UTIME_OMIT`.
                 // ESP-IDF and HorizonOS do not support `futimens` at all and the behavior for those OS is therefore
                 // the same as for Redox.

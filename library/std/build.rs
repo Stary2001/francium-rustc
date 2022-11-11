@@ -18,6 +18,7 @@ fn main() {
         || target.contains("apple-watchos")
         || target.contains("uwp")
         || target.contains("windows")
+        || target.contains("francium")
         || target.contains("fuchsia")
         || (target.contains("sgx") && target.contains("fortanix"))
         || target.contains("hermit")
