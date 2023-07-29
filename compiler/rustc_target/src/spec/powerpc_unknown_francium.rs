@@ -6,6 +6,7 @@ pub fn target() -> Target {
     base.add_pre_link_args(LinkerFlavor::Gnu(Cc::Yes, Lld::No), &["-m32"]);
     base.max_atomic_width = Some(32);
     base.stack_probes = StackProbeType::Inline;
+    base.linker = Some("powerpc-unknown-francium-gcc".into());
 
     Target {
         llvm_target: "powerpc-unknown-elf".into(),

@@ -1086,7 +1086,7 @@ supported_targets! {
 
     ("x86_64-unknown-francium", x86_64_unknown_francium),
     ("aarch64-unknown-francium", aarch64_unknown_francium),	
-    ("riscv64-unknown-francium", riscv64_unknown_francium),
+    ("riscv64gc-unknown-francium", riscv64gc_unknown_francium),
     ("powerpc-unknown-francium", powerpc_unknown_francium),
     ("sparc-unknown-francium", sparc_unknown_francium),
     ("mipsel-unknown-francium", mipsel_unknown_francium),

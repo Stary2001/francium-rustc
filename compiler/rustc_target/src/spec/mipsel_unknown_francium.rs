@@ -1,6 +1,9 @@
 use crate::spec::{Target, TargetOptions};
 
 pub fn target() -> Target {
+    let mut base = super::francium_base::opts();
+    base.linker = Some("mipsel-unknown-francium-gcc".into());
+
     Target {
         llvm_target: "mipsel-unknown-elf".into(),
         pointer_width: 32,
@@ -13,7 +16,7 @@ pub fn target() -> Target {
             max_atomic_width: Some(32),
             mcount: "_mcount".into(),
 
-            ..super::francium_base::opts()
+            ..base
         },
     }
 }
