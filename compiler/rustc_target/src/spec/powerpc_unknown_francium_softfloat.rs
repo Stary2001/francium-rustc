@@ -13,6 +13,7 @@ pub fn target() -> Target {
         pointer_width: 32,
         data_layout: "E-m:e-p:32:32-i64:64-n32".into(),
         arch: "powerpc".into(),
+        features: "-hard-float".into(),
         options: TargetOptions { endian: Endian::Big, mcount: "_mcount".into(), ..base },
     }
 }
